@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opportunity Arbitrage Blueprint — Alessandra Camille</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,700&family=Inter:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #EEF2F7;
+  --surface:   #FFFFFF;
+  --surface-2: #E2E8F0;
+  --blue:      #2E6BB5;
+  --blue-soft: #D6E4F5;
+  --blue-mid:  #7AAAD8;
+  --black:     #12161E;
+  --mid:       #6B7A8F;
+  --light:     #A8B5C4;
+  --border:    rgba(46,107,181,0.1);
+  --border-g:  rgba(18,22,30,0.08);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--black);
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* NAV */
+nav {
+  padding: 22px 0;
+  background: rgba(238,242,247,0.92);
+  backdrop-filter: blur(14px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--border-g);
+}
+nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--black);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+.nav-cta {
+  background: var(--blue);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: opacity 0.15s;
+  letter-spacing: 0.02em;
+}
+.nav-cta:hover { opacity: 0.84; }
+
+/* HERO */
+.hero { padding: 96px 0 80px; }
+
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--blue);
+  flex-shrink: 0;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 7.5vw, 68px);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  color: var(--black);
+  margin-bottom: 28px;
+}
+h1 em {
+  font-style: italic;
+  color: var(--blue);
+}
+
+.hero-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 17px;
+  color: var(--mid);
+  line-height: 1.72;
+  max-width: 500px;
+  margin-bottom: 48px;
+}
+.hero-sub strong { color: var(--black); font-weight: 500; }
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  display: inline-block;
+  background: var(--blue);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 15px 32px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: opacity 0.15s, transform 0.12s;
+  letter-spacing: 0.02em;
+}
+.btn-primary:hover { opacity: 0.86; transform: translateY(-1px); }
+.hero-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--light);
+  letter-spacing: 0.04em;
+}
+
+/* STATS */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 64px 0 56px;
+}
+@media (max-width: 480px) { .stats-row { grid-template-columns: 1fr; } }
+
+.stat-card {
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 24px 20px;
+  border: 1px solid var(--border-g);
+}
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--mid);
+  line-height: 1.45;
+  font-family: 'Inter', sans-serif;
+}
+
+/* FORMULA */
+.formula-wrap { margin-bottom: 64px; }
+.formula-card {
+  background: var(--black);
+  border-radius: 14px;
+  padding: 42px 38px;
+}
+.f-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blue-mid);
+  margin-bottom: 24px;
+}
+.formula {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(13px, 2.8vw, 17px);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.f-term {
+  background: rgba(122,170,216,0.12);
+  border: 1px solid rgba(122,170,216,0.2);
+  color: #e8eef5;
+  padding: 9px 18px;
+  border-radius: 6px;
+}
+.f-op { color: var(--blue-mid); font-size: 20px; }
+.f-result {
+  background: var(--blue);
+  color: #fff;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.f-note {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: rgba(255,255,255,0.36);
+  font-style: italic;
+}
+
+/* SECTIONS */
+section { padding: 64px 0; }
+section + section { border-top: 1px solid var(--border-g); }
+
+h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 4.5vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.12;
+  margin-bottom: 18px;
+  color: var(--black);
+}
+h2 em { font-style: italic; color: var(--blue); }
+
+p { color: var(--mid); margin-bottom: 16px; font-size: 15px; }
+p strong { color: var(--black); font-weight: 500; }
+p:last-child { margin-bottom: 0; }
+
+/* CHAPTERS */
+.chapters { display: grid; gap: 8px; margin-top: 36px; }
+
+.ch-card {
+  background: var(--surface);
+  border: 1px solid var(--border-g);
+  border-radius: 10px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 16px;
+  align-items: start;
+  transition: border-color 0.15s;
+}
+.ch-card:hover { border-color: var(--blue-mid); }
+
+.ch-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--blue);
+  font-weight: 500;
+  background: var(--blue-soft);
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+}
+.ch-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--black);
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+.ch-desc {
+  font-size: 13px;
+  color: var(--mid);
+  line-height: 1.55;
+}
+
+/* BONUS */
+.bonus-card {
+  background: var(--blue-soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 28px;
+  margin-top: 14px;
+}
+.bonus-tag {
+  display: inline-block;
+  background: var(--blue);
+  color: #fff;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+.bonus-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--black);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.bonus-desc {
+  font-size: 14px;
+  color: #3d5f80;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* WHO */
+.for-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 32px;
+}
+@media (max-width: 480px) { .for-grid { grid-template-columns: 1fr; } }
+
+.for-card {
+  background: var(--surface);
+  border: 1px solid var(--border-g);
+  border-radius: 12px;
+  padding: 26px 22px;
+}
+.for-card.yes { border-top: 2px solid var(--blue); }
+.for-card.no  { border-top: 2px solid var(--surface-2); }
+
+.for-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.for-card.yes .for-label { color: var(--blue); }
+.for-card.no  .for-label { color: var(--light); }
+
+.for-list { list-style: none; }
+.for-list li {
+  font-size: 13px;
+  color: var(--black);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-g);
+  line-height: 1.45;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.for-list li:last-child { border-bottom: none; }
+.for-card.yes .for-list li::before { content: "✓"; color: var(--blue); font-size: 11px; font-weight: 600; flex-shrink: 0; }
+.for-card.no  .for-list li::before { content: "—"; color: var(--light); font-size: 11px; flex-shrink: 0; }
+
+/* QUOTE */
+.quote-section { padding: 64px 0; }
+.quote-card {
+  background: var(--surface);
+  border: 1px solid var(--border-g);
+  border-radius: 14px;
+  padding: 56px 48px;
+  text-align: center;
+}
+.quote-rule {
+  width: 36px;
+  height: 1px;
+  background: var(--blue);
+  margin: 0 auto 32px;
+}
+.quote-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 3.8vw, 30px);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--black);
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  margin-bottom: 24px;
+}
+.quote-attr {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--light);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* CTA */
+.cta-section { padding: 80px 0 96px; }
+.cta-card {
+  background: var(--surface);
+  border: 1px solid var(--border-g);
+  border-radius: 18px;
+  padding: 60px 52px;
+  text-align: center;
+}
+.cta-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 14px;
+}
+.cta-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(30px, 5vw, 46px);
+  font-weight: 700;
+  font-style: italic;
+  color: var(--black);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.cta-sub {
+  font-size: 15px;
+  color: var(--mid);
+  margin-bottom: 40px;
+}
+.cta-price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.cta-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--black);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.cta-badge {
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.btn-cta {
+  display: inline-block;
+  background: var(--blue);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 17px 48px;
+  border-radius: 7px;
+  text-decoration: none;
+  transition: opacity 0.15s, transform 0.12s;
+  letter-spacing: 0.02em;
+}
+.btn-cta:hover { opacity: 0.86; transform: translateY(-1px); }
+.cta-fine {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--light);
+  margin-top: 16px;
+  letter-spacing: 0.06em;
+}
+
+/* FOOTER */
+footer {
+  padding: 28px 0;
+  border-top: 1px solid var(--border-g);
+}
+footer .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--light);
+}
+.footer-note {
+  font-size: 12px;
+  color: var(--light);
+  max-width: 340px;
+  line-height: 1.5;
+  text-align: right;
+}
+@media (max-width: 500px) { .footer-note { text-align: left; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="nav-brand">Alessandra Camille</a>
+    <a href="https://alessandracamille.gumroad.com/l/opportunity-arbitrage" class="nav-cta">Get the Blueprint — $27</a>
+  </div>
+</nav>
+
+<main>
+
+  <div class="hero">
+    <div class="container">
+      <p class="eyebrow">The Wave — Income Systems</p>
+      <h1>The sportsbook<br>bonus isn't for<br><em>gamblers.</em></h1>
+      <p class="hero-sub">
+        It's a corporate marketing budget — $200 to $400 per new user.<br>
+        <strong>This book teaches you how to collect it instead.</strong>
+      </p>
+      <div class="hero-actions">
+        <a href="https://alessandracamille.gumroad.com/l/opportunity-arbitrage" class="btn-primary">Get the Blueprint — $27 →</a>
+        <span class="hero-note">30-Day Plan included. Instant download.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-card">
+        <p class="stat-num">~80%</p>
+        <p class="stat-label">of a free bet converted to real cash when hedged correctly</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-num">11</p>
+        <p class="stat-label">chapters covering every layer of the system</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-num">30</p>
+        <p class="stat-label">day execution plan bundled free</p>
+      </div>
+    </div>
+
+    <div class="formula-wrap">
+      <div class="formula-card">
+        <p class="f-eyebrow">The system in one line</p>
+        <div class="formula">
+          <span class="f-term">Free Bet</span>
+          <span class="f-op">+</span>
+          <span class="f-term">Hedge</span>
+          <span class="f-op">=</span>
+          <span class="f-result">Guaranteed Profit</span>
+        </div>
+        <p class="f-note">Both outcomes pay you. The game result is irrelevant. This is math, not gambling.</p>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="container">
+      <h2>Not gambling.<br><em>A system.</em></h2>
+      <p>Sportsbooks spend hundreds of dollars acquiring each new user. That budget comes as welcome bonuses — "Bet $5, get $150." "Risk-free first bet up to $1,000."</p>
+      <p>Most people bet emotionally and lose it. That's exactly what sportsbooks count on.</p>
+      <p><strong>Bonus betting is different.</strong> You place a bet at the sportsbook. You place the opposite at an exchange. One wins, one loses — but the bonus covers the gap. Both outcomes leave you in profit.</p>
+      <p>This is matched betting. Legal. Documented. Mathematical. Hundreds of thousands of people in the UK, US, and Europe do it every week.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>What's inside.</h2>
+      <p>Eleven chapters. The complete system — from your first bet to running twenty books.</p>
+      <div class="chapters">
+        <div class="ch-card"><div class="ch-num">01</div><div><p class="ch-title">Understanding betting bonuses</p><p class="ch-desc">Why sportsbooks offer them, how they work, and how to read one like a system — not a gift.</p></div></div>
+        <div class="ch-card"><div class="ch-num">02</div><div><p class="ch-title">Welcome bonuses</p><p class="ch-desc">Deposit match vs. free bet. Real value vs. fake value. How to evaluate any offer before you claim it.</p></div></div>
+        <div class="ch-card"><div class="ch-num">03</div><div><p class="ch-title">Rollover requirements</p><p class="ch-desc">What "x20 wagering" means in practice. Strategies to clear rollover without losing money.</p></div></div>
+        <div class="ch-card"><div class="ch-num">04</div><div><p class="ch-title">No-deposit bonuses</p><p class="ch-desc">The appeal, the real limits, and when they're actually worth your time.</p></div></div>
+        <div class="ch-card"><div class="ch-num">05</div><div><p class="ch-title">Risk-free bets</p><p class="ch-desc">How "risk-free" actually works. The back/lay method. How to guarantee profit from refunds.</p></div></div>
+        <div class="ch-card"><div class="ch-num">06</div><div><p class="ch-title">Reload bonuses and loyalty programs</p><p class="ch-desc">Weekly promos, cashback, and how to avoid getting promo-banned as you scale.</p></div></div>
+        <div class="ch-card"><div class="ch-num">07</div><div><p class="ch-title">What to avoid</p><p class="ch-desc">Multi-accounting, bots, fraud. Legal and ethical lines. How to stay clean while scaling.</p></div></div>
+        <div class="ch-card"><div class="ch-num">08</div><div><p class="ch-title">The mathematics</p><p class="ch-desc">Expected value made simple. Odds, probability, expected outcomes. Real example calculations.</p></div></div>
+        <div class="ch-card"><div class="ch-num">09</div><div><p class="ch-title">Building your strategy</p><p class="ch-desc">Choosing the best books. Weekly betting rhythm. Bankroll management.</p></div></div>
+        <div class="ch-card"><div class="ch-num">10</div><div><p class="ch-title">Regional and legal guide</p><p class="ch-desc">Where bonuses are legal and lucrative. US, UK, EU, Nordics, Australia. Tax and ID checks.</p></div></div>
+        <div class="ch-card"><div class="ch-num">11</div><div><p class="ch-title">Tools and resources</p><p class="ch-desc">Calculators, trackers, odds finders. Everything you need to run the system.</p></div></div>
+      </div>
+      <div class="bonus-card">
+        <span class="bonus-tag">Bundled Free</span>
+        <p class="bonus-title">The 30-Day Bonus Plan</p>
+        <p class="bonus-desc">A day-by-day execution calendar. Day 1 through Day 30 — from setting up your first account to running a multi-book system. Not theory. A plan you follow.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Who this is for.</h2>
+      <div class="for-grid">
+        <div class="for-card yes">
+          <p class="for-label">This is for you</p>
+          <ul class="for-list">
+            <li>You want a first or second income stream</li>
+            <li>You think analytically</li>
+            <li>You can follow a system</li>
+            <li>You want to start this week</li>
+            <li>You have under $200 to begin</li>
+          </ul>
+        </div>
+        <div class="for-card no">
+          <p class="for-label">Not for you</p>
+          <ul class="for-list">
+            <li>You want to gamble</li>
+            <li>You expect overnight results</li>
+            <li>You won't follow a system</li>
+            <li>You want fully passive income</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="quote-section">
+    <div class="container">
+      <div class="quote-card">
+        <div class="quote-rule"></div>
+        <p class="quote-text">"The house doesn't always win. It just counts on you not knowing how."</p>
+        <p class="quote-attr">— Alessandra Camille</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <div class="container">
+      <div class="cta-card">
+        <p class="cta-eyebrow">Ready to build your Wave?</p>
+        <h2 class="cta-headline">Get the complete system.</h2>
+        <p class="cta-sub">Opportunity Arbitrage Blueprint + 30-Day Bonus Plan. Instant download.</p>
+        <div class="cta-price-row">
+          <span class="cta-price">$27</span>
+          <span class="cta-badge">One-time</span>
+        </div>
+        <a href="https://alessandracamille.gumroad.com/l/opportunity-arbitrage" class="btn-cta">Get the Blueprint →</a>
+        <p class="cta-fine">No subscription. No upsells. Just the system.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p class="footer-brand">Alessandra Camille</p>
+    <p class="footer-note">For educational purposes only. Always verify the laws in your jurisdiction before engaging with any sportsbook platform.</p>
+  </div>
+</footer>
+
+</body>
+</html>
